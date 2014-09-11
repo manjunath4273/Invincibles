@@ -1,0 +1,740 @@
+#include <stdlib.h>
+#include <GL/glut.h>
+#include<GL/glu.h>
+#include<time.h>
+#include<stdio.h>
+#include<math.h>
+
+void display(void);
+int s=0,j=0;
+void *currentfont;
+
+
+float a=-3.0,b=-1.0,c=1.5,d=-1.5;
+/* for cuboid*/
+       GLfloat vertices1[][3] = {{-3.0,-1.5,-1.0},{-1.0,-1.5,-1.0},{-1.0,1.5,-1.0}, {-3.0,1.5,-1.0}, {-3.0,-1.5,1.0},{-1.0,-1.5,1.0}, {-1.0,1.5,1.0}, {-3.0,1.5,1.0}};
+
+
+ /*GLfloat colors[][3] = {{0.137225,0.556863,0.137255},{0.137225,0.556863,0.137255},{0.137225,0.556863,0.137255},{0.137225,0.556863,0.137255},
+ {0.137225,0.556863,0.137255},{0.137225,0.556863,0.137255},{0.137225,0.556863,0.137255},{0.137225,0.556863,0.137255}};*/
+
+
+ GLfloat colors[][3] = {{0.0,1.0,0.0},{0.0,1.0,0.0},{0.0,1.0,0.0},{0.0,1.0,0.0},{0.0,1.0,0.0},{0.0,1.0,0.0},{0.0,1.0,0.0},{0.0,1.0,0.0}};
+
+
+
+
+/* for loop */
+GLfloat vertice[][3]={{ 0.5,1.0,0.25},{2.5,1.0,0.25},{2.5,0.25,0.25},{2.0,0.25,0.25},{2.0,0.0,0.25},{2.5,0.0,0.25},
+{2.5,-0.75,0.25},{0.5,-0.75,0.25},{0.5,0.0,0.25},{1.25,0.0,0.25},{1.25,0.25,0.25},{0.5,0.25,0.25},
+{0.75,0.75,0.25},{2.25,0.75,0.25},{2.25,0.5,0.25},{1.75,0.5,0.25},{1.75,-0.25,0.25},{2.25,-0.25,0.25},{2.25,-0.5,0.25},
+{0.75,-0.5,0.25},{0.75,-0.25,0.25},{1.5,-0.25,0.25},{1.5,0.5,0.25},{0.75,0.5,0.25},{0.5,1.0,-0.25},{2.5,1.0,-0.25},
+{2.5,0.25,-0.25},{2.0,0.25,-0.25},{2.0,0.0,-0.25},{2.5,0.0,-0.25},{2.5,-0.75,-0.25},{0.5,-0.75,-0.25},{0.5,0.0,-0.25},
+{1.25,0.0,-0.25},{1.25,0.25,-0.25},{0.5,0.25,-0.25},{0.75,0.75,-0.25},{2.25,0.75,-0.25},{2.25,0.5,-0.25},{1.75,0.5,-0.25},
+{1.75,-0.25,-0.25},{2.25,-0.25,-0.25},{2.25,-0.5,-0.25},{0.75,-0.5,-0.25},{0.75,-0.25,-0.25},{1.5,-0.25,-0.25},{1.5,0.5,-0.25},{0.75,0.5,-0.25}};
+
+
+GLfloat normal[][3]={{ 0.5,1.0,0.25},{2.5,1.0,0.25},{2.5,0.25,0.25},{2.0,0.25,0.25},{2.0,0.0,0.25},{2.5,0.0,0.25},
+{2.5,-0.75,0.25},{0.5,-0.75,0.25},{0.5,0.0,0.25},{1.25,0.0,0.25},{1.25,0.25,0.25},{0.5,0.25,0.25},
+{0.75,0.75,0.25},{2.25,0.75,0.25},{2.25,0.5,0.25},{1.75,0.5,0.25},{1.75,-0.25,0.25},{2.25,-0.25,0.25},{2.25,-0.5,0.25},
+{0.75,-0.5,0.25},{0.75,-0.25,0.25},{1.5,-0.25,0.25},{1.5,0.5,0.25},{0.75,0.5,0.25},{0.5,1.0,-0.25},{2.5,1.0,-0.25},
+{2.5,0.25,-0.25},{2.0,0.25,-0.25},{2.0,0.0,-0.25},{2.5,0.0,-0.25},{2.5,-0.75,-0.25},{0.5,-0.75,-0.25},{0.5,0.0,-0.25},
+{1.25,0.0,-0.25},{1.25,0.25,-0.25},{0.5,0.25,-0.25},{0.75,0.75,-0.25},{2.25,0.75,-0.25},{2.25,0.5,-0.25},{1.75,0.5,-0.25},
+{1.75,-0.25,-0.25},{2.25,-0.25,-0.25},{2.25,-0.5,-0.25},{0.75,-0.5,-0.25},{0.75,-0.25,-0.25},{1.5,-0.25,-0.25},{1.5,0.5,-0.25},{0.75,0.5,-0.25}};
+
+/* for fluid to move in loop*/
+
+GLfloat vert[][3]={{0.50,1.0,0.25},{0.50,0.75,0.25},{0.70,0.75,0.25},{0.70,1.0,0.25},
+      {0.50,1.0,-0.25},{0.50,0.75,-0.25},{0.70,0.75,-0.25},{0.70,1.0,-0.25}};
+
+
+
+GLfloat norm[][3]={{0.5,1.0,0.25},{0.5,0.75,0.25},{1.0,0.75,0.25},{1.0,1.0,0.25},
+      {0.5,1.0,-0.25},{0.5,0.75,-0.25},{1.0,0.75,-0.25},{1.0,1.0,-0.25}};
+
+/* for handle */
+GLfloat ver[][3]={{-3.0,0.85,0.05},{-3.0,0.75,0.05},{-3.10,0.85,0.05},{-3.10,0.35,0.05},{-3.0,0.35,0.05},
+     {-3.0,0.45,0.05},{-3.15,0.45,0.05},{-3.15,0.75,0.05},{-3.15,0.85,0.05},{-3.15,0.35,0.05},
+      {-3.0,0.85,-0.05},{-3.0,0.75,-0.05},{-3.10,0.85,-0.05},{-3.10,0.35,-0.05},{-3.0,0.35,-0.05},
+     {-3.0,0.45,-0.05},{-3.15,0.45,-0.05},{-3.15,0.75,-0.05},{-3.15,0.85,-0.05},{-3.15,0.35,-0.05}};
+
+
+GLfloat nor[][3]={{-1.0,0.75,0.15},{-1.0,0.65,0.15},{-1.10,0.75,0.15},{-1.10,0.25,0.15},{-1.0,0.25,0.15},
+     {-1.0,0.35,0.15},{-1.05,0.35,0.15},{-1.05,0.65,0.15},{-1.05,0.75,0.15},{-1.05,0.25,0.15},
+      {-1.0,0.75,-0.15},{-1.0,0.65,-0.15},{-1.10,0.75,-0.15},{-1.10,0.25,-0.15},{-1.0,0.25,-0.15},
+     {-1.0,0.35,-0.15},{-1.05,0.35,-0.15},{-1.05,0.65,-0.15},{-1.05,0.75,-0.15},{-1.05,0.25,-0.15}};
+
+
+
+ GLfloat colors1[][3] = {{1.0,0.0,0.0},{1.0,0.0,0.0},{1.0,0.0,0.0},{1.0,0.0,0.0},{1.0,0.0,0.0},{1.0,0.0,0.0},{1.0,0.0,0.0},{1.0,0.0,0.0}};
+/* for left arrow */
+
+GLfloat v[][3]={{-0.10,0,0.25},{0.15,0,0.25},{0.15,0.15,0.25},{0.4,-0.15,0.25},{0.15,-0.40,0.25},{0.15,-0.25,0.25},{-0.10,-0.25,0.25},
+
+{-0.1,0,-0.25},{0.15,0,-0.25},{0.15,0.15,-0.25},{0.4,-0.15,-0.25},{0.15,-0.40,-0.25},{0.15,-0.25,-0.25},{-0.10,-0.25,-0.25}};
+
+
+GLfloat n[][3]={{0,0,0.25},{0.25,0,0.25},{0.25,0.15,0.25},{0.5,-0.15,0.25},{0.25,-0.40,0.25},{0.25,-0.25,0.25},{0,-0.25,0.25},
+
+{0,0,-0.25},{0.25,0,-0.25},{0.25,0.15,-0.25},{0.5,-0.15,-0.25},{0.25,-0.40,-0.25},{0.25,-0.25,-0.25},{0,-0.25,-0.25}};
+
+
+/*  right arrow  */
+
+GLfloat v1[][3]={{2.60,0,0.25},{2.85,0,0.25},{2.85,0.15,0.25},{3.1,-0.15,0.25},{2.85,-0.40,0.25},{2.85,-0.25,0.25},{2.60,-0.25,0.25},
+
+{2.60,0,-0.25},{2.85,0,-0.25},{2.85,0.15,-0.25},{3.10,-0.15,-0.25},{2.85,-0.40,-0.25},{2.85,-0.25,-0.25},{2.60,-0.25,-0.25}};
+
+GLfloat n1[][3]={{2.60,0,0.25},{2.85,0,0.25},{2.85,0.15,0.25},{3.1,-0.15,0.25},{2.85,-0.40,0.25},{2.85,-0.25,0.25},{2.60,-0.25,0.25},
+
+{2.60,0,-0.25},{2.85,0,-0.25},{2.85,0.15,-0.25},{3.10,-0.15,-0.25},{2.85,-0.40,-0.25},{2.85,-0.25,-0.25},{2.60,-0.25,-0.25}};
+
+
+void sleep(unsigned int msec)
+{
+clock_t goal = msec + clock();
+while(goal>clock());
+}
+
+
+void polygon(int a, int b, int c , int d)
+{
+ glBegin(GL_POLYGON);
+  glColor3fv(colors[a]);
+//  glNormal3fv(normals[a]);
+  glVertex3fv(vertices1[a]);
+  glColor3fv(colors[b]);
+  //glNormal3fv(normals[b]);
+  glVertex3fv(vertices1[b]);
+  glColor3fv(colors[c]);
+  //glNormal3fv(normals[c]);
+  glVertex3fv(vertices1[c]);
+  glColor3fv(colors[d]);
+  //glNormal3fv(normals[d]);
+  glVertex3fv(vertices1[d]);
+ glEnd();
+}
+
+void plygon(int a, int b,int c, int d)
+{
+ glBegin(GL_POLYGON);
+//glColor3fv(colors[a]);
+  glNormal3fv(normal[a]);
+  glVertex3fv(vertice[a]);
+ //glColor3fv(colors[b]);
+  glNormal3fv(normal[b]);
+  glVertex3fv(vertice[b]);
+  //glColor3fv(colors[c]);
+  glNormal3fv(normal[c]);
+  glVertex3fv(vertice[c]);
+//glColor3fv(colors[d]);
+  glNormal3fv(normal[d]);
+  glVertex3fv(vertice[d]);
+ glEnd();
+}
+
+/* for fluid */
+
+
+void fluid(int a,int b, int c, int d)
+{
+
+ glBegin(GL_POLYGON);
+  glColor3fv(colors[a]);
+ // glNormal3fv(norm[a]);
+  glVertex3fv(vert[a]);
+  glColor3fv(colors[b]);
+  //glNormal3fv(norm[b]);
+  glVertex3fv(vert[b]);
+  glColor3fv(colors[c]);
+ // glNormal3fv(norm[c]);
+  glVertex3fv(vert[c]);
+  glColor3fv(colors[d]);
+ // glNormal3fv(norm[d]);
+  glVertex3fv(vert[d]);
+ glEnd();
+
+
+}
+
+
+/* for handle */
+void hand(int a,int b, int c, int d)
+{
+
+ glBegin(GL_POLYGON);
+  glColor3fv(colors1[a]);
+  glNormal3fv(nor[a]);
+  glVertex3fv(ver[a]);
+  glColor3fv(colors1[b]);
+  glNormal3fv(nor[b]);
+  glVertex3fv(ver[b]);
+  glColor3fv(colors1[c]);
+  glNormal3fv(nor[c]);
+  glVertex3fv(ver[c]);
+  glColor3fv(colors1[d]);
+  glNormal3fv(nor[d]);
+  glVertex3fv(ver[d]);
+ glEnd();
+}
+void leftarrow(int a, int b, int c , int d)
+{
+ glBegin(GL_QUADS);
+ glColor3f(1.0,0.0,0.0);
+//  glColor3fv(colors[a]);
+//  glNormal3fv(n[a]);
+  glVertex3fv(v[a]);
+//  glColor3fv(colors[b]);
+//  glNormal3fv(n[b]);
+  glVertex3fv(v[b]);
+//  glColor3fv(colors[c]);
+//  glNormal3fv(n[c]);
+  glVertex3fv(v[c]);
+//  glColor3fv(colors[d]);
+//  glNormal3fv(n[d]);
+  glVertex3fv(v[d]);
+ glEnd();
+}
+
+
+
+void rightarrow(int a, int b, int c , int d)
+{
+ glBegin(GL_POLYGON);
+//  glColor3fv(colors[a]);
+  glNormal3fv(n1[a]);
+  glVertex3fv(v1[a]);
+//  glColor3fv(colors[b]);
+  glNormal3fv(n1[b]);
+  glVertex3fv(v1[b]);
+//  glColor3fv(colors[c]);
+  glNormal3fv(n1[c]);
+  glVertex3fv(v1[c]);
+//  glColor3fv(colors[d]);
+  glNormal3fv(n1[d]);
+  glVertex3fv(v1[d]);
+ glEnd();
+}
+void colorcube()
+{
+ polygon(0,3,2,1);
+ polygon(2,3,7,6);
+ polygon(0,4,7,3);
+ polygon(1,2,6,5);
+ polygon(4,5,6,7);
+ polygon(0,1,5,4);
+}
+
+void pipe()
+{
+ plygon(0,1,25,24);
+ plygon(0,11,35,24);
+ plygon(11,10,34,35);
+ plygon(10,9,33,34);
+ plygon(8,9,33,32);
+ plygon(8,7,31,32);
+ plygon(7,6,30,31);
+ plygon(5,6,30,29);
+ plygon(4,5,29,28);
+ plygon(3,4,28,27);
+ plygon(3,2,26,27);
+ plygon(1,2,26,25);
+ plygon(12,13,37,36);
+ plygon(13,14,38,37);
+ plygon(15,14,38,39);
+ plygon(15,16,40,39);
+ plygon(16,17,41,40);
+ plygon(17,18,42,41);
+ plygon(18,19,43,42);
+ plygon(20,19,43,44);
+ plygon(20,21,45,44);
+ plygon(22,21,45,46);
+ plygon(23,22,46,47);
+ plygon(12,23,47,36);
+}
+
+void fluids()
+{
+ fluid(0,1,2,3);
+ fluid(0,1,5,4);
+ fluid(0,3,7,4);
+ fluid(3,2,6,7);
+ fluid(1,2,6,5);
+ fluid(4,5,6,7);
+}
+
+void arrow1()
+{
+    leftarrow(0,1,8,7);
+ leftarrow(1,2,9,8);
+ leftarrow(2,3,10,9);
+ leftarrow(3,4,11,10);
+ leftarrow(4,5,12,11);
+ leftarrow(5,6,13,12);
+ leftarrow(0,6,13,7);
+}
+
+void arrow2()
+{
+    rightarrow(0,1,8,7);
+ rightarrow(1,2,9,8);
+ rightarrow(2,3,10,9);
+ rightarrow(3,4,11,10);
+ rightarrow(4,5,12,11);
+ rightarrow(5,6,13,12);
+ rightarrow(0,6,13,7);
+}
+
+void idleMouse(void)
+{
+  int j;
+  float i;
+//if(c>-1.5){
+    for(j=1;j<=12;j++)
+    switch(j)
+    {
+    case 1:
+    for(i=0;i<1.9;i+=.1)
+  {
+      glPushMatrix();
+      glTranslatef(i,0,0);
+      fluids();
+      glPopMatrix();
+      sleep(1);
+      glFlush();
+  }
+ break;
+
+case 2:
+    for(i=0;i<.6;i+=.1)
+  {
+      glPushMatrix();
+        glTranslatef(1.8,-i,0);
+      fluids();
+      glPopMatrix();
+      sleep(2);
+      glFlush();
+  }
+ break;
+
+case 3:
+
+   for(i=-1.8;i<-1.2;i+=.1)
+  {
+      glPushMatrix();
+      glTranslatef(-i,-.5,0);
+      fluids();
+      glPopMatrix();
+      sleep(1);
+      glFlush();
+  }
+
+ break;
+
+
+case 4:
+
+    for(i=0.5;i<1.1;i+=.1)
+  {
+      glPushMatrix();
+      glTranslatef(1.25,-i,0);
+      fluids();
+      glPopMatrix();
+      sleep(5);
+      glFlush();
+
+  }
+
+ break;
+
+ case 5:
+
+
+  for(i=1.25;i<1.8;i+=.1)
+  {
+       glPushMatrix();
+       glTranslatef(i,-1,0);
+       sleep(2);
+       fluids();
+       glPopMatrix();
+       glFlush();
+  }
+ break;
+
+
+
+case 6:
+
+    for(i=1;i<1.6;i+=.1)
+  {
+        glPushMatrix();
+        glTranslatef(1.8,-i,0);
+        fluids();
+        glPopMatrix();
+        sleep(2);
+        glFlush();
+
+  }
+
+ break;
+
+case 7:
+
+   for(i=-1.8;i<0;i+=.1)
+  {
+      glPushMatrix();
+      glTranslatef(-i,-1.5,0);
+      fluids();
+      glPopMatrix();
+      sleep(15);
+      glFlush();
+  }
+
+ break;
+
+ case 8:
+  for(i=-1.5;i<-.9;i+=.1)
+  {
+       glPushMatrix();
+       glTranslatef(0,i,0);
+       sleep(2);
+       fluids();
+       glPopMatrix();
+       glFlush();
+  }
+ break;
+
+
+case 9:
+
+    for(i=0;i<.9;i+=.1)
+  {
+      glPushMatrix();
+      glTranslatef(i,-1,0);
+      fluids();
+      glPopMatrix();
+      sleep(2);
+      glFlush();
+  }
+
+ break;
+
+case 10:
+  for(i=-.9;i<-.4;i+=.1)
+  {
+       glPushMatrix();
+       glTranslatef(.8,i,0);
+       sleep(15);
+       fluids();
+       glPopMatrix();
+       glFlush();
+  }
+ break;
+
+
+case 11:
+
+   for(i=-.8;i<.1;i+=.1)
+  {
+      glPushMatrix();
+      glTranslatef(-i,-.5,0);
+      fluids();
+      glPopMatrix();
+      sleep(5);
+      glFlush();
+  }
+
+ break;
+
+ case 12:
+ for(i=-.5;i<0;i+=.1)
+  {
+       glPushMatrix();
+       glTranslatef(0,i,0);
+       fluids();
+       glPopMatrix();
+       glFlush();
+   }
+ break;
+
+
+    }
+     glFlush();
+     glutPostRedisplay();
+     glutSwapBuffers();
+     glFlush();
+}
+/*else
+    exit(0);*/
+//}
+void handle()
+{
+ hand(0,1,7,8);
+ hand(7,8,18,17);
+ hand(8,0,10,18);
+ hand(0,1,11,10);
+ hand(7,1,11,17);
+ hand(10,11,17,18);
+ hand(2,8,9,3);
+ hand(2,8,18,12);
+ hand(2,3,13,12);
+ hand(3,9,19,13);
+ hand(8,9,19,18);
+ hand(12,18,19,13);
+ hand(9,4,5,6);
+ hand(4,5,15,14);
+ hand(5,6,16,15);
+ hand(6,9,19,16);
+ hand(9,4,14,19);
+ hand(16,15,14,19);
+}
+
+void polygon1(int p,int q,int r,int s)
+{
+  glBegin(GL_LINE_LOOP);
+  glColor3f(1.0,0.0,0.0);
+  glVertex3fv(vertices1[p]);
+  glVertex3fv(vertices1[q]);
+  glVertex3fv(vertices1[r]);
+  glVertex3fv(vertices1[s]);
+  glEnd();
+}
+
+
+void spin()
+{
+ polygon1(0,3,2,1);
+ polygon1(2,3,7,6);
+ polygon1(0,4,7,3);
+ polygon1(1,2,6,5);
+ polygon1(4,5,6,7);
+ polygon1(0,1,5,4);
+}
+
+static GLfloat theta[] = {0.0,0.0,0.0};
+static GLint axis=2;
+static GLdouble viewer[]= {0.0, 0.0, 5.0};
+
+
+
+
+void myInit()
+{
+    glClearColor(1.0,1.0,1.0,1.0);
+}
+
+void setFont(void* font)
+{
+	currentfont=font;
+}
+
+void drawString(float x,float y,float z,char* string)
+{
+	char* c;
+	glRasterPos3f(x,y,z);
+
+	for(c=string; *c!='\0'; c++)
+	{	glColor3f(0.0,1.0,0.0);
+		glutBitmapCharacter(currentfont,*c);
+	}
+}
+
+void disp1()
+{
+    setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(0.0,1.0,0.0);
+	drawString(0.0,655.0,0.0,"PESIT BANGALORE SOUTH CAMPUS");
+
+	setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(1.0,0.0,1.0);
+	drawString(-200.0,555.0,0.0,"DEPARTMENT OF COMPUTER SCIENCE ENGINEERING");
+
+	setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(1.0,0.0,1.0);
+	drawString(-100.0,455.0,0.0,"COMPUTER GRAPHICS MINI PROJECT ON");
+
+	setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(0.0,0.0,1.0);
+	drawString(50.0,355.0,0.0,"FLUID SIMULATION");
+
+    setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(0.0,0.0,1.0);
+	drawString(-700.0,175.0,0.0,"BY : ");
+
+    setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(0.0,0.0,1.0);
+	drawString(-700.0,125.0,0.0,"MANJUNATH C (1PE11CS047)");
+
+    setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(0.0,0.0,1.0);
+	drawString(-700.0,75.0,0.0,"MOHAMMED MAAZ (1PE11CS053)");
+
+	setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(0.0,0.0,1.0);
+	drawString(600.0,175.0,0.0,"GUIDES: ");
+
+    setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(0.0,0.0,1.0);
+	drawString(600.0,125.0,0.0,"Ms.SUDHA ");
+	glColor3f(0.0,0.0,1.0);
+	drawString(50.0,-200,0.0,"RIGHT CLICK TO START ");
+	glFlush();
+
+}
+
+void disp2()
+{
+    setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(0.0,1.0,0.0);
+	drawString(-2.5,-1.8,0.0,"CONTAINER");
+
+	setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(1.0,0.0,1.0);
+	drawString(-0.8,-1.5,0.0,"Level OF");
+	setFont(GLUT_BITMAP_TIMES_ROMAN_24);
+	glColor3f(1.0,0.0,1.0);
+	drawString(-0.7,-1.8,0.0,"Fluid");
+	glFlush();
+
+}
+
+void init()
+{
+    glClearColor(1.0,1.0,1.0,1.0);
+    glColor3f(0.0,1.0,0.0);
+    glPointSize(1.0);
+    gluOrtho2D(0.0,499.0,0.0,499.0);
+}
+
+
+
+void display(void)
+{
+ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+ glLoadIdentity();
+ gluLookAt(viewer[0],viewer[1],viewer[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+ if(s==0)
+    {
+        init();
+        disp1();
+        //s=1;
+
+
+    }
+    else if(s==1)
+    {
+        //init();
+
+
+        //colorcube();
+
+
+        //arrow2();
+        //disp2();
+
+        glRotatef(theta[0], 1.0, 0.0, 0.0);
+        glRotatef(theta[1], 0.0, 1.0, 0.0);
+        glRotatef(theta[2], 0.0, 0.0, 1.0);
+        //display2();
+        arrow1();
+        fluids();
+        pipe();
+        handle();
+        spin();
+        arrow2();
+        //colorcube();
+
+    // idleMouse();
+         glColor3f(0.0,1.0,0.0);
+            glBegin(GL_POLYGON);
+            glVertex2f(a,d);
+             glVertex2f(b,d);
+              glVertex2f(b,c);
+               glVertex2f(a,c);
+
+
+            glEnd();
+  	glutPostRedisplay();
+     	glFlush();
+ 	glutSwapBuffers();
+    }
+
+}
+
+void mouse(int btn, int state, int x, int y)
+{
+if(btn==GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+{
+            if(c!=d){
+               c-=0.5;
+               idleMouse();      //c-=1.0;
+                axis=0;
+            }
+            //idleMouse();
+         glutPostRedisplay();
+       // glutDisplayFunc(display);
+
+}
+ if(btn==GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+ {
+     axis = 1;
+     	s=1;
+}
+ if(btn==GLUT_MIDDLE_BUTTON && state == GLUT_DOWN)
+ {
+     axis=2;
+
+}
+ theta[axis] += 1.0;
+ if( theta[axis] > 360.0 ) theta[axis] -= 360.0;
+ {
+    //spin();
+    display();
+}
+
+}
+
+void myReshape(int w, int h)
+{
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    if (w <= h)
+        glOrtho(-2.0, 2.0, -2.0 * (GLfloat) h / (GLfloat) w,
+            2.0 * (GLfloat) h / (GLfloat) w, -10.0, 10.0);
+    else
+        glOrtho(-2.0 * (GLfloat) w / (GLfloat) h,
+            2.0 * (GLfloat) w / (GLfloat) h, -2.0, 2.0, -10.0, 10.0);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+
+void key(unsigned char k,int x,int y)
+{
+ if(k=='1') glutIdleFunc(colorcube);
+ glutPostRedisplay();
+ if(k=='2') glutIdleFunc(spin);
+ glutPostRedisplay();
+ if(k=='3') exit(0);
+}
+
+
+
+void  main(int argc, char **argv)
+{
+ glutInit(&argc, argv);
+ glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+ glutInitWindowSize(1020, 500);
+ glutInitWindowPosition(50,50);
+ glutCreateWindow("FLUID SIMULATION");
+ glutReshapeFunc(myReshape);
+ glutDisplayFunc(display);
+ glutMouseFunc(mouse);
+//glutIdleFunc(idleMouse);
+ glutKeyboardFunc(key);
+ glEnable(GL_DEPTH_TEST);
+ myInit();
+ glutMainLoop();
+}
+
